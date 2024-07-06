@@ -1,4 +1,4 @@
-Consulta 1: Obtener los detalles de todas las ventas realizadas en una fecha específica
+Consulta 1: Obtener los detalles de todas las ventas realizadas en una fecha específica.
 SELECT
     V.ID AS VentaID,
     C.Nombre AS NombreCliente,
@@ -21,7 +21,7 @@ WHERE
 
 --------------------------------------------------------------------------------
 
-Consulta 2: Obtener la cantidad total de libros vendidos por género
+Consulta 2: Obtener la cantidad total de libros vendidos por género.
 SELECT
     L.Genero AS Genero,
     SUM(DV.Cantidad) AS TotalVendidos
@@ -36,7 +36,7 @@ ORDER BY
 
 --------------------------------------------------------------------------------
 
-Consulta 3: Listar los empleados y los roles asociados a cada uno
+Consulta 3: Listar los empleados y los roles asociados a cada uno.
 SELECT
     E.Nombre AS NombreEmpleado,
     E.Apellido AS ApellidoEmpleado,
@@ -50,7 +50,8 @@ JOIN
 ORDER BY
     E.Apellido, E.Nombre;
 
-
+--------------------------------------------------------------------------------
+Consulta 4: obtener la lista de libros más vendidos en la librería.
 
 
 
