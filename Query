@@ -1,0 +1,20 @@
+-- Consulta 1: Obtener los detalles de todas las ventas realizadas en una fecha específica
+SELECT
+    V.ID AS VentaID,
+    C.Nombre AS NombreCliente,
+    C.Apellido AS ApellidoCliente,
+    V.FechaVenta AS FechaVenta,
+    L.Titulo AS TituloLibro,
+    DV.Cantidad AS Cantidad,
+    DV.PrecioUnitario AS PrecioUnitario,
+    (DV.Cantidad * DV.PrecioUnitario) AS TotalVenta
+FROM
+    Ventas V
+JOIN
+    Clientes C ON V.ClienteID = C.ID
+JOIN
+    DetallesVentas DV ON V.ID = DV.VentaID
+JOIN
+    Libros L ON DV.LibroID = L.ID
+WHERE
+    V.FechaVenta = '2023-01-01';
