@@ -51,7 +51,21 @@ ORDER BY
     E.Apellido, E.Nombre;
 
 --------------------------------------------------------------------------------
+
 Consulta 4: obtener la lista de libros más vendidos en la librería.
+SELECT 
+    L.Titulo AS Titulo_Libro,
+    L.Autor AS Autor_Libro,
+    SUM(DV.Cantidad) AS Total_Vendido
+FROM 
+    Libros L
+JOIN 
+    DetallesVentas DV ON L.ID = DV.LibroID
+GROUP BY 
+    L.Titulo, L.Autor
+ORDER BY 
+    Total_Vendido DESC
+LIMIT 10;
 
 
 
