@@ -18,3 +18,41 @@ JOIN
     Libros L ON DV.LibroID = L.ID
 WHERE
     V.FechaVenta = '2023-01-01';
+
+--------------------------------------------------------------------------------
+
+-- Consulta 2: Obtener la cantidad total de libros vendidos por género
+SELECT
+    L.Genero AS Genero,
+    SUM(DV.Cantidad) AS TotalVendidos
+FROM
+    DetallesVentas DV
+JOIN
+    Libros L ON DV.LibroID = L.ID
+GROUP BY
+    L.Genero
+ORDER BY
+    TotalVendidos DESC;
+
+--------------------------------------------------------------------------------
+
+Consulta 3: Listar los empleados y los roles asociados a cada uno
+SELECT
+    E.Nombre AS NombreEmpleado,
+    E.Apellido AS ApellidoEmpleado,
+    R.Nombre AS Rol
+FROM
+    Empleados E
+JOIN
+    EmpleadosRoles ER ON E.ID = ER.EmpleadoID
+JOIN
+    Roles R ON ER.RolID = R.ID
+ORDER BY
+    E.Apellido, E.Nombre;
+
+
+
+
+
+
+
