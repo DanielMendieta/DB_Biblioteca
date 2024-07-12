@@ -52,7 +52,7 @@ ORDER BY
 
 --------------------------------------------------------------------------------
 
-Consulta 4: obtener la lista de libros más vendidos en la librería.
+Consulta 4: Obtener la lista de libros más vendidos en la librería.
 SELECT 
     L.Titulo AS Titulo_Libro,
     L.Autor AS Autor_Libro,
@@ -67,7 +67,92 @@ ORDER BY
     Total_Vendido DESC
 LIMIT 10;
 
+--------------------------------------------------------------------------------
 
+Consulta 5: Obtener btiene información sobre las ventas, incluyendo el nombre del cliente, la fecha de la venta, 
+el total de la venta, y el total de libros vendidos en cada venta, ordenada por la fecha de venta.
 
+SELECT 
+    V.ID AS VentaID,
+    C.Nombre AS Nombre_Cliente,
+    C.Apellido AS Apellido_Cliente,
+    V.FechaVenta AS Fecha_Venta,
+    V.Total AS Total_Venta,
+    SUM(DV.Cantidad) AS Total_Libros_Vendidos
+FROM 
+    Ventas V
+JOIN 
+    Clientes C ON V.ClienteID = C.ID
+JOIN 
+    DetallesVentas DV ON V.ID = DV.VentaID
+GROUP BY 
+    V.ID, C.Nombre, C.Apellido, V.FechaVenta, V.Total
+ORDER BY 
+    V.FechaVenta DESC;
 
+--------------------------------------------------------------------------------
+Consulta 6: Obtener información sobre los empleados y las sucursales en las que trabajan, 
+incluyendo el nombre del empleado, el apellido, la sucursal, y el total de roles que tiene cada empleado, 
+ordenada por el nombre de la sucursal:
 
+SELECT 
+    E.ID AS EmpleadoID,
+    E.Nombre AS Nombre_Empleado,
+    E.Apellido AS Apellido_Empleado,
+    S.Nombre AS Nombre_Sucursal,
+    COUNT(ER.ID) AS Total_Roles
+FROM 
+    Empleados E
+JOIN 
+    Sucursales S ON E.SucursalID = S.ID
+JOIN 
+    EmpleadosRoles ER ON E.ID = ER.EmpleadoID
+GROUP BY 
+    E.ID, E.Nombre, E.Apellido, S.Nombre
+ORDER BY 
+    S.Nombre, E.Nombre;
+
+--------------------------------------------------------------------------------
+Consulta 7: Obtener los proveedores que han suministrado más de 100 libros en total, 
+incluyendo el nombre del proveedor, el total de libros suministrados, y el total de compras, 
+ordenada por el nombre del proveedor:
+
+SELECT 
+    P.ID AS ProveedorID,
+    P.Nombre AS Nombre_Proveedor,
+    SUM(DC.Cantidad) AS Total_Libros_Suministrados,
+    COUNT(C.ID) AS Total_Compras
+FROM 
+    Proveedores P
+JOIN 
+    Compras C ON P.ID = C.ProveedorID
+JOIN 
+    DetallesCompras DC ON C.ID = DC.CompraID
+GROUP BY 
+    P.ID, P.Nombre
+HAVING 
+    SUM(DC.Cantidad) > 100
+ORDER BY 
+    P.Nombre;
+
+--------------------------------------------------------------------------------
+Consulta 8: Clientes que han realizado más de 5 compras, 
+incluyendo su nombre, apellido, total de compras y la suma de los totales de las ventas que han realizado, 
+ordenada por la suma de las ventas:
+
+SELECT 
+    C.ID AS ClienteID,
+    C.Nombre AS Nombre_Cliente,
+    C.Apellido AS Apellido_Cliente,
+    COUNT(V.ID) AS Total_Compras,
+    SUM(V.Total) AS Suma_Ventas
+FROM 
+    Clientes C
+JOIN 
+    Ventas V ON C.ID = V.ClienteID
+GROUP BY 
+    C.ID, C.Nombre, C.Apellido
+HAVING 
+    COUNT(V.ID) > 5
+ORDER BY 
+    Suma_Ventas DESC;
