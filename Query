@@ -156,3 +156,91 @@ HAVING
     COUNT(V.ID) > 5
 ORDER BY 
     Suma_Ventas DESC;
+
+--------------------------------------------------------------------------------
+Consulta 9: Mostrar información sobre los empleados que trabajan en una sucursal específica y que han participado en más de 3 roles distintos, 
+incluyendo su nombre, apellido, nombre de la sucursal, y el total de roles en los que han participado, ordenada por el total de roles:
+
+SELECT 
+    E.ID AS EmpleadoID,
+    E.Nombre AS Nombre_Empleado,
+    E.Apellido AS Apellido_Empleado,
+    S.Nombre AS Nombre_Sucursal,
+    COUNT(ER.ID) AS Total_Roles
+FROM 
+    Empleados E
+JOIN 
+    Sucursales S ON E.SucursalID = S.ID
+JOIN 
+    EmpleadosRoles ER ON E.ID = ER.EmpleadoID
+WHERE 
+    S.Nombre = 'Sucursal A'
+GROUP BY 
+    E.ID, E.Nombre, E.Apellido, S.Nombre
+HAVING 
+    COUNT(ER.ID) > 3
+ORDER BY 
+    Total_Roles DESC;
+--------------------------------------------------------------------------------
+Consulta 10: Mostrar los clientes que han comprado libros de un autor específico en más de 2 ventas distintas, 
+incluyendo su nombre, apellido, el total de ventas, y el total de libros comprados de ese autor, 
+ordenada por el total de libros comprados:
+
+SELECT 
+    C.ID AS ClienteID,
+    C.Nombre AS Nombre_Cliente,
+    C.Apellido AS Apellido_Cliente,
+    COUNT(DISTINCT V.ID) AS Total_Ventas,
+    SUM(DV.Cantidad) AS Total_Libros_Comprados
+FROM 
+    Clientes C
+JOIN 
+    Ventas V ON C.ID = V.ClienteID
+JOIN 
+    DetallesVentas DV ON V.ID = DV.VentaID
+JOIN 
+    Libros L ON DV.LibroID = L.ID
+WHERE 
+    L.Autor = 'Autor Específico'
+GROUP BY 
+    C.ID, C.Nombre, C.Apellido
+HAVING 
+    COUNT(DISTINCT V.ID) > 2
+ORDER BY 
+    Total_Libros_Comprados DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
