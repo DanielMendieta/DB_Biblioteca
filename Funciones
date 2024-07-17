@@ -1,5 +1,6 @@
 1- Función para obtener el total de ventas de clientes específicos:
 
+DELIMITER $$
 CREATE FUNCTION TotalComprasCliente (ClienteID INT)
 RETURNS DECIMAL(10, 2)
 BEGIN
@@ -8,13 +9,17 @@ BEGIN
     FROM Ventas V
     WHERE V.ClienteID = ClienteID;
     RETURN total;
-END;
+END $$
+
+DELIMITER ;
 
 SELECT TotalComprasCliente(1) AS Total_Compras;  -- Llamar a la funcion 
 
 -----------------------------------------------------------------------------------
 
 2- Función para obtener el total de libros comprados por clientes específicos:
+
+DELIMITER $$
 
 CREATE FUNCTION TotalLibrosCompradosCliente (ClienteID INT)
 RETURNS INT
@@ -25,6 +30,10 @@ BEGIN
     JOIN DetallesVentas DV ON V.ID = DV.VentaID
     WHERE V.ClienteID = ClienteID;
     RETURN total;
-END;
+
+END $$
+
+DELIMITER ;
+
 
 SELECT TotalLibrosCompradosCliente(2) AS Total_Libros_Comprados; -- Llamar a la funcion 
