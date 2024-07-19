@@ -37,3 +37,68 @@ DELIMITER ;
 
 
 SELECT TotalLibrosCompradosCliente(2) AS Total_Libros_Comprados; -- Llamar a la funcion 
+
+-----------------------------------------------------------------------------------
+
+3- Funcíon que calcula el total de ventas de un cliente en un rango de fechas específico. 
+Esto incluye el uso de parámetros adicionales para las fechas de inicio y fin.
+
+DELIMITER $$
+
+CREATE FUNCTION TotalVentasClientePorFecha (
+    ClienteID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+    SELECT SUM(V.Total) INTO total
+    FROM Ventas V
+    WHERE V.ClienteID = ClienteID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN total;
+END $$
+
+DELIMITER ;
+
+SELECT TotalVentasClientePorFecha(1, '2024-01-01', '2024-06-30') AS Total_Ventas; -- Llamar a la funcion 
+
+-----------------------------------------------------------------------------------
+4- Función que calcula el promedio de la calificación de los libros comprados por un cliente en un rango de fechas específico. 
+Esto demuestra el uso de funciones agregadas y parámetros múltiples.
+
+DELIMITER $$
+CREATE FUNCTION PromedioCalificacionClientePorFecha (
+    ClienteID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS DECIMAL(3, 2)
+BEGIN
+    DECLARE promedio DECIMAL(3, 2);
+    SELECT AVG(L.Calificacion) INTO promedio
+    FROM Ventas V
+    JOIN DetallesVentas DV ON V.ID = DV.VentaID
+    JOIN Libros L ON DV.LibroID = L.ID
+    WHERE V.ClienteID = ClienteID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN promedio;
+END $$
+
+DELIMITER ;
+
+SELECT PromedioCalificacionClientePorFecha(1, '2024-01-01', '2024-06-30') AS Promedio_Calificacion;
+
+-----------------------------------------------------------------------------------
+
+5-
+
+
+
+
+
+
+
+
+
