@@ -92,13 +92,77 @@ SELECT PromedioCalificacionClientePorFecha(1, '2024-01-01', '2024-06-30') AS Pro
 
 -----------------------------------------------------------------------------------
 
-5-
+5-Función que calcula el total de ingresos generados por un autor específico en un rango de fechas. 
+Esta función toma en cuenta todas las ventas de libros de ese autor en el periodo indicado.
 
+DELIMITER ||
+CREATE FUNCTION TotalIngresosAutorPorFecha (
+    AutorID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+    SELECT SUM(DV.PrecioUnitario * DV.Cantidad) INTO total
+    FROM Ventas V
+    JOIN DetallesVentas DV ON V.ID = DV.VentaID
+    JOIN Libros L ON DV.LibroID = L.ID
+    WHERE L.AutorID = AutorID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN total;
 
+END ||
 
+DELIMITER ;
 
+SELECT TotalIngresosAutorPorFecha(2, '2024-01-01', '2024-06-30') AS Total_Ingresos;
 
+-----------------------------------------------------------------------------------
+6-Función que calcula el total de libros vendidos de un género específico en un rango de fechas. 
 
+DELIMITER ||
+CREATE FUNCTION TotalLibrosVendidosPorGenero (
+    GeneroID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS INT
+BEGIN
+    DECLARE total INT;
+    SELECT SUM(DV.Cantidad) INTO total
+    FROM Ventas V
+    JOIN DetallesVentas DV ON V.ID = DV.VentaID
+    JOIN Libros L ON DV.LibroID = L.ID
+    WHERE L.GeneroID = GeneroID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN total;
 
+END ||
 
+DELIMITER ;
+
+SELECT TotalLibrosVendidosPorGenero(1, '2024-01-01', '2024-06-30') AS Total_Libros_Vendidos;
+
+-----------------------------------------------------------------------------------
+7-Función que calcula el total de empleados por rol en la empresa.
+
+DELIMITER //
+
+CREATE FUNCTION TotalEmpleadosPorRol (
+    RolID INT
+)
+RETURNS INT
+BEGIN
+    DECLARE total INT;
+    SELECT COUNT(*) INTO total
+    FROM empleadosRoles ER
+    WHERE ER.RolID = RolID;
+    RETURN total;
+END //
+
+DELIMITER ;
+
+-----------------------------------------------------------------------------------
+8-
 
