@@ -164,5 +164,101 @@ END //
 DELIMITER ;
 
 -----------------------------------------------------------------------------------
-8-
+8-Función que calcula el número total de ventas realizadas por un cliente específico en un rango de fechas.
+
+DELIMITER $$
+
+CREATE FUNCTION TotalVentasClientePorFecha (
+    ClienteID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS INT
+BEGIN
+    DECLARE total INT;
+    SELECT COUNT(*) INTO total
+    FROM Ventas V
+    WHERE V.ClienteID = ClienteID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN total;
+END $$
+
+DELIMITER ;
+
+SELECT TotalIngresosClientePorFecha(4, '2024-01-01', '2024-06-30') AS Total_Ingresos;
+
+-----------------------------------------------------------------------------------
+
+9-Función que calcula el promedio de la cantidad de libros vendidos por cliente en un rango de fechas.
+
+DELIMITER $$
+
+CREATE FUNCTION PromedioLibrosVendidosPorCliente (
+    ClienteID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE promedio DECIMAL(10, 2);
+    SELECT AVG(subquery.TotalLibrosVendidos) INTO promedio
+    FROM (
+        SELECT SUM(DV.Cantidad) AS TotalLibrosVendidos
+        FROM Ventas V
+        JOIN DetallesVentas DV ON V.ID = DV.VentaID
+        WHERE V.ClienteID = ClienteID
+          AND V.FechaVenta BETWEEN FechaInicio AND FechaFin
+        GROUP BY V.ClienteID, DV.LibroID
+    ) AS subquery;
+    RETURN promedio;
+END $$
+
+DELIMITER ;
+
+SELECT PromedioLibrosVendidosPorCliente(6, '2024-01-01', '2024-06-30') AS Promedio_Libros_Vendidos;
+
+
+-----------------------------------------------------------------------------------
+
+10- Función que calcula el total de descuentos aplicados a las ventas de un cliente específico en un rango de fechas.
+DELIMITER $$
+
+CREATE FUNCTION TotalDescuentosPorCliente (
+    ClienteID INT,
+    FechaInicio DATE,
+    FechaFin DATE
+)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE totalDescuento DECIMAL(10, 2);
+    SELECT SUM(DV.Descuento) INTO totalDescuento
+    FROM Ventas V
+    JOIN DetallesVentas DV ON V.ID = DV.VentaID
+    WHERE V.ClienteID = ClienteID
+      AND V.FechaVenta BETWEEN FechaInicio AND FechaFin;
+    RETURN totalDescuento;
+END $$
+
+DELIMITER ;
+
+
+SELECT TotalDescuentosPorCliente(9, '2024-01-01', '2024-06-30') AS Total_Descuentos;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
