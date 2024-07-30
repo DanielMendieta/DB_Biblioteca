@@ -54,7 +54,30 @@ GRANT 'rol_admin_inventario' TO 'pablo'@'localhost';
 -- Verificar los privilegios asignados a Pablo
 SHOW GRANTS FOR 'pablo'@'localhost';
 
+------------------------------------------------------------------------------------------------
 
+4- /* Carla es una analista de ventas y necesita acceso de solo lectura a todas las tablas y acceso de escritura a una tabla específica de reportes. */
+
+-- Crear usuario Carla
+CREATE USER 'carla'@'localhost' IDENTIFIED BY 'XXXXX';
+
+-- Crear rol para analista de ventas
+CREATE ROLE 'rol_analista_ventas';
+
+-- Asignar privilegios al rol de analista de ventas
+GRANT SELECT ON Libreria.Clientes TO 'rol_analista_ventas';
+GRANT SELECT ON Libreria.Ventas TO 'rol_analista_ventas';
+GRANT SELECT ON Libreria.Libros TO 'rol_analista_ventas';
+GRANT SELECT ON Libreria.Inventarios TO 'rol_analista_ventas';
+GRANT INSERT, UPDATE ON Libreria.Reportes TO 'rol_analista_ventas';
+
+-- Asignar el rol de analista de ventas a Carla
+GRANT 'rol_analista_ventas' TO 'carla'@'localhost';
+
+-- Verificar los privilegios asignados a Carla
+SHOW GRANTS FOR 'carla'@'localhost';
+
+------------------------------------------------------------------------------------------------
 
 
 
