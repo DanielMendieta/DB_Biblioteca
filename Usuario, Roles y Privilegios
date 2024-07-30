@@ -1,0 +1,73 @@
+1- /* María es una gerente y necesita tener acceso a todas las operaciones en la base de datos. */
+-- Crear usuario
+CREATE USER 'maria'@'localhost' IDENTIFIED BY 'XXXXX';
+
+-- Crear rol
+CREATE ROLE 'rol_gerente';
+
+-- Asignar privilegios al rol
+GRANT ALL PRIVILEGES ON Libreria.* TO 'rol_gerente';
+
+-- Asignar el rol al usuario
+GRANT 'rol_gerente' TO 'maria'@'localhost';
+
+-- Verificar los privilegios asignados
+SHOW GRANTS FOR 'maria'@'localhost';
+
+------------------------------------------------------------------------------------------------
+
+2- /* Daniel es un vendedor en la librería y necesitamos otorgarle acceso para ver y modificar datos de ventas y clientes, 
+pero no le damos acceso para modificar datos del inventario. */
+
+-- Crear usuario
+CREATE USER 'daniel'@'localhost' IDENTIFIED BY 'XXXXX';
+
+-- Crear rol
+CREATE ROLE 'rol_vendedor';
+
+-- Asignar privilegios al rol
+GRANT SELECT, INSERT, UPDATE, DELETE ON Libreria.Clientes TO 'rol_vendedor';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Libreria.Ventas TO 'rol_vendedor';
+GRANT SELECT ON Libreria.Libros TO 'rol_vendedor';
+
+-- Asignar el rol al usuario
+GRANT 'rol_vendedor' TO 'daniel'@'localhost';
+
+------------------------------------------------------------------------------------------------
+
+3-/* Pablo es un administrador de inventarios y necesita tener acceso completo a la tabla Inventarios, pero solo acceso de lectura a las tablas Clientes y Ventas. */
+
+-- Crear usuario Pablo
+CREATE USER 'pablo'@'localhost' IDENTIFIED BY 'XXXXX';
+
+-- Crear rol para administrador de inventarios
+CREATE ROLE 'rol_admin_inventario';
+
+-- Asignar privilegios al rol de administrador de inventarios
+GRANT SELECT, INSERT, UPDATE, DELETE ON Libreria.Inventarios TO 'rol_admin_inventario';
+GRANT SELECT ON Libreria.Clientes TO 'rol_admin_inventario';
+GRANT SELECT ON Libreria.Ventas TO 'rol_admin_inventario';
+
+-- Asignar el rol de administrador de inventarios a Pablo
+GRANT 'rol_admin_inventario' TO 'pablo'@'localhost';
+
+-- Verificar los privilegios asignados a Pablo
+SHOW GRANTS FOR 'pablo'@'localhost';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
