@@ -1,0 +1,83 @@
+1- Procedimiento almacenado para insertar un nuevo cliente en la tabla Clientes.
+
+DELIMITER //
+
+CREATE PROCEDURE InsertarNuevoCliente(
+    IN p_Nombre VARCHAR(100),
+    IN p_Email VARCHAR(100),
+    IN p_Telefono VARCHAR(15),
+    IN p_Direccion VARCHAR(200)
+)
+BEGIN
+    INSERT INTO Clientes (Nombre, Email, Telefono, Direccion)
+    VALUES (p_Nombre, p_Email, p_Telefono, p_Direccion);
+END //
+
+DELIMITER ;
+
+
+--CALL InsertarNuevoCliente('Daniel Mendieta', 'mendietadaniel1994@gmail.com', '123456789', 'Calle Falsa 123');
+
+------------------------------------------------------------------------
+
+2- Procedimiento almacenado para recuperar todas las ventas de un cliente específico dado su ID.
+
+DELIMITER //
+
+CREATE PROCEDURE ObtenerVentasPorCliente(
+    IN p_ClienteID INT
+)
+BEGIN
+    SELECT V.VentaID, V.Fecha, V.Total
+    FROM Ventas V
+    WHERE V.ClienteID = p_ClienteID;
+END //
+
+DELIMITER ;
+
+-- CALL ObtenerVentasPorCliente(1);
+
+------------------------------------------------------------------------
+
+3- Procedimiento almacenado para calcular el total de ventas realizadas por un cliente en un rango de fechas específico 
+y devolverá el resultado junto con el número de ventas.
+
+DELIMITER //
+
+CREATE PROCEDURE CalcularTotalVentasCliente(
+    IN p_ClienteID INT,
+    IN p_FechaInicio DATE,
+    IN p_FechaFin DATE,
+    OUT p_TotalVentas DECIMAL(10, 2),
+    OUT p_NumeroVentas INT
+)
+BEGIN
+    SELECT SUM(V.Total), COUNT(*)
+    INTO p_TotalVentas, p_NumeroVentas
+    FROM Ventas V
+    WHERE V.ClienteID = p_ClienteID
+    AND V.Fecha BETWEEN p_FechaInicio AND p_FechaFin;
+END //
+
+DELIMITER ;
+
+-- CALL CalcularTotalVentasCliente(1, '2023-01-01', '2023-12-31', @totalVentas, @numeroVentas);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
