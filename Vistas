@@ -1,0 +1,44 @@
+1-Esta vista mostrará los detalles de los clientes junto con la información de su última compra.
+
+CREATE VIEW ClientesUltimaCompra AS
+SELECT 
+    C.ClienteID,
+    C.Nombre,
+    C.Email,
+    C.Telefono,
+    C.Direccion,
+    V.VentaID,
+    V.Fecha AS FechaUltimaCompra,
+    V.Total AS TotalUltimaCompra
+FROM 
+    Clientes C
+LEFT JOIN 
+    Ventas V ON C.ClienteID = V.ClienteID
+WHERE 
+    V.Fecha = (SELECT MAX(V2.Fecha) FROM Ventas V2 WHERE V2.ClienteID = C.ClienteID);
+
+SELECT * FROM ClientesUltimaCompra; --LLAMAMOS A LA VISTA.
+
+---------------------------------------------------------------------------------------------------------------------
+2- Esta vista mostrará un resumen de las ventas por cada libro, incluyendo la cantidad vendida y el total recaudado.
+
+CREATE VIEW ResumenVentasPorLibro AS
+SELECT 
+    L.LibroID,
+    L.Titulo,
+    L.Autor,
+    L.Genero,
+    L.Precio,
+    COUNT(VL.VentaID) AS CantidadVendida,
+    SUM(VL.Cantidad * L.Precio) AS TotalRecaudado
+FROM 
+    Libros L
+LEFT JOIN 
+    VentasLibros VL ON L.LibroID = VL.LibroID
+GROUP BY 
+    L.LibroID, L.Titulo, L.Autor, L.Genero, L.Precio;
+
+SELECT * FROM ResumenVentasPorLibro; -- LLAMAMOS A LA VISTA.
+
+
+
