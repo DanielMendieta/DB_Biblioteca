@@ -169,6 +169,14 @@ FROM AnalisisMensualVentas
 GROUP BY LibroID, TituloLibro, AutorLibro
 ORDER BY IngresosTotales DESC;
 
+-Informe de Ventas Mensuales por Cliente
+
+SELECT Mes, NombreCliente, SUM(TotalRecaudado) AS GastoMensual
+FROM AnalisisMensualVentas
+GROUP BY Mes, ClienteID, NombreCliente
+ORDER BY Mes DESC, GastoMensual DESC;
+
+
 
 
 
