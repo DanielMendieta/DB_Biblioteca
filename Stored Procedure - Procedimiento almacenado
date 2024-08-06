@@ -61,4 +61,53 @@ END //
 
 DELIMITER ;
 
--- CALL CalcularTotalVentasCliente(1, '2023-01-01', '2023-12-31', @totalVentas, @numeroVentas);
+CALL CalcularTotalVentasCliente(1, '2023-01-01', '2023-12-31', @totalVentas, @numeroVentas);
+
+------------------------------------------------------------------------
+4- Procedimiento almacenado para calcular el total de ventas por un libro específico.
+
+DELIMITER //
+
+CREATE PROCEDURE TotalVentasPorLibro (
+    IN libroID INT
+)
+BEGIN
+    SELECT 
+        L.LibroID,
+        L.Titulo,
+        L.Autor,
+        SUM(VL.Cantidad) AS TotalCantidadVendida,
+        SUM(VL.Cantidad * L.Precio) AS TotalRecaudado
+    FROM 
+        VentasLibros VL
+    JOIN 
+        Libros L ON VL.LibroID = L.LibroID
+    WHERE 
+        VL.LibroID = libroID
+    GROUP BY 
+        L.LibroID, L.Titulo, L.Autor;
+END //
+
+DELIMITER ;
+
+
+CALL TotalVentasPorLibro(4); -- Llamar al procedimiento almacenado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
