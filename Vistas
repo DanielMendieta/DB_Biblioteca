@@ -40,5 +40,137 @@ GROUP BY
 
 SELECT * FROM ResumenVentasPorLibro; -- LLAMAMOS A LA VISTA.
 
+---------------------------------------------------------------------------------------------------------------------
+3- Esta vista muestra detalles de las ventas junto con la información del cliente que realizó la compra.
+
+CREATE VIEW DetalleVentasCliente AS
+SELECT 
+    V.VentaID,
+    V.Fecha,
+    V.Total,
+    C.ClienteID,
+    C.Nombre AS NombreCliente,
+    C.Email AS EmailCliente,
+    C.Telefono AS TelefonoCliente
+FROM 
+    Ventas V
+JOIN 
+    Clientes C ON V.ClienteID = C.ClienteID;
+
+SELECT * FROM DetalleVentasCliente; -- LLAMAMOS A LA VISTA.
+
+---------------------------------------------------------------------------------------------------------------------
+
+4- Esta vista muestra el total de ventas realizadas por cada cliente en cada fecha.
+
+CREATE VIEW VentasPorFechaCliente AS
+SELECT 
+    V.Fecha,
+    V.ClienteID,
+    C.Nombre AS NombreCliente,
+    SUM(V.Total) AS TotalVentas
+FROM 
+    Ventas V
+JOIN 
+    Clientes C ON V.ClienteID = C.ClienteID
+GROUP BY 
+    V.Fecha, V.ClienteID, C.Nombre;
+
+SELECT * FROM VentasPorFechaCliente; -- LLAMAMOS A LA VISTA.
+
+---------------------------------------------------------------------------------------------------------------------
+5- Esta vista combina información de ventas, clientes, libros y empleados para mostrar un informe detallado de ventas, 
+incluyendo información del cliente, detalles del libro y el empleado que realizó la venta.
+
+CREATE VIEW InformeDetalladoVentas AS
+SELECT 
+    V.VentaID,
+    V.Fecha,
+    V.Total,
+    C.ClienteID,
+    C.Nombre AS NombreCliente,
+    C.Email AS EmailCliente,
+    C.Telefono AS TelefonoCliente,
+    E.EmpleadoID,
+    E.Nombre AS NombreEmpleado,
+    L.LibroID,
+    L.Titulo AS TituloLibro,
+    L.Autor AS AutorLibro,
+    VL.Cantidad AS CantidadVendida,
+    (VL.Cantidad * L.Precio) AS TotalPorLibro
+FROM 
+    Ventas V
+JOIN 
+    Clientes C ON V.ClienteID = C.ClienteID
+JOIN 
+    Empleados E ON V.EmpleadoID = E.EmpleadoID
+JOIN 
+    VentasLibros VL ON V.VentaID = VL.VentaID
+JOIN 
+    Libros L ON VL.LibroID = L.LibroID;
+
+SELECT * FROM InformeDetalladoVentas; -- LLAMAMOS A LA VISTA
+
+/* PODEMOS USAR ESTA VISTA PARA MULTIPLES PROPOSITOS COMO POR EJEMPLO:*/
+
+--Desempeño de los empleados, cuántas ventas han realizado y qué valor total han generado.
+
+SELECT EmpleadoID, NombreEmpleado, COUNT(VentaID) AS TotalVentas, SUM(Total) AS ValorTotalVentas
+FROM InformeDetalladoVentas
+GROUP BY EmpleadoID, NombreEmpleado
+ORDER BY ValorTotalVentas DESC;
+
+/*Generar informes detallados de ventas, que incluyan información completa de cada transacción, 
+tales como datos del cliente, detalles de los libros vendidos y el empleado que realizó la venta. */
+
+SELECT * FROM InformeDetalladoVentas WHERE Fecha BETWEEN '2024-01-01' AND '2024-01-31';
+
+---------------------------------------------------------------------------------------------------------------------
+
+6- Informe de clientes, ventas, libros y detalles de las ventas para proporcionar un análisis de ventas mensual por cliente y por libro.
+
+CREATE VIEW AnalisisMensualVentas AS
+SELECT 
+    DATE_FORMAT(V.Fecha, '%Y-%m') AS Mes,
+    C.ClienteID,
+    C.Nombre AS NombreCliente,
+    C.Email AS EmailCliente,
+    L.LibroID,
+    L.Titulo AS TituloLibro,
+    L.Autor AS AutorLibro,
+    SUM(VL.Cantidad) AS CantidadVendida,
+    SUM(VL.Cantidad * L.Precio) AS TotalRecaudado
+FROM 
+    Ventas V
+JOIN 
+    Clientes C ON V.ClienteID = C.ClienteID
+JOIN 
+    VentasLibros VL ON V.VentaID = VL.VentaID
+JOIN 
+    Libros L ON VL.LibroID = L.LibroID
+GROUP BY 
+    DATE_FORMAT(V.Fecha, '%Y-%m'), C.ClienteID, L.LibroID
+ORDER BY 
+    Mes DESC, NombreCliente, TituloLibro;
+
+
+SELECT * FROM AnalisisMensualVentas;-- Llamar a la vista.
+
+--Identificación de Clientes Frecuentes
+SELECT NombreCliente, EmailCliente, SUM(TotalRecaudado) AS GastoTotal
+FROM AnalisisMensualVentas
+GROUP BY ClienteID, NombreCliente, EmailCliente
+ORDER BY GastoTotal DESC
+LIMIT 10;
+
+--Evaluación del Rendimiento de los Libros
+SELECT TituloLibro, AutorLibro, SUM(CantidadVendida) AS TotalCantidadVendida, SUM(TotalRecaudado) AS IngresosTotales
+FROM AnalisisMensualVentas
+GROUP BY LibroID, TituloLibro, AutorLibro
+ORDER BY IngresosTotales DESC;
+
+
+
+
 
 
