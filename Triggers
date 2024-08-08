@@ -1,0 +1,21 @@
+1 -Este trigger se ejecutará automáticamente cada vez que se inserte una nueva venta en la tabla DetallesVentas, 
+asegurando que el inventario se mantenga actualizado sin necesidad de intervención manual.
+
+DELIMITER //
+
+CREATE TRIGGER ActualizarInventarioDespuesDeVenta
+AFTER INSERT ON DetallesVentas
+FOR EACH ROW
+BEGIN
+    UPDATE Inventarios
+    SET Cantidad = Cantidad - NEW.Cantidad
+    WHERE LibroID = NEW.LibroID;
+END //
+
+DELIMITER ;
+
+
+INSERT INTO DetallesVentas (VentaID, LibroID, Cantidad, PrecioUnitario)
+VALUES (1, 2, 3, 19.99);
+
+
